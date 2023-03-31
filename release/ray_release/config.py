@@ -84,13 +84,13 @@ def parse_test_definition(test_definitions: List[TestDefinition]) -> List[Test]:
         test_definition_invariant(
             test_definition, 
             variations,
-            'empty variations cannot be empty',
+            'variations field cannot be empty in a test definition',
         )
         for variation in variations:
             test_definition_invariant(
                 test_definition,
                 '__suffix__' in variation,
-                'missing __suffix__ in variation'
+                'missing __suffix__ field in a variation'
             )
             test = copy.deepcopy(test_definition)
             test["name"] = f'{test["name"]}.{variation.pop("__suffix__")}'
