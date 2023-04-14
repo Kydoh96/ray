@@ -9,7 +9,7 @@ from ray.tune.schedulers.trial_scheduler import FIFOScheduler, TrialScheduler
 from ray.util.annotations import PublicAPI
 
 class _PSOTrialState:
-    """Internal PBT state tracked per-trial."""
+    """Internal PSO state tracked per-trial."""
     
     def __init__(self, trial: Trial):
         self.orig_tag = trial.experiment_tag
@@ -93,5 +93,6 @@ class ParticleSwarmOptimization(FIFOScheduler):
 
         return score
     
-    def __slope(self) -> Trial:
+    def _global_best(self) -> Trial:
         trials.sort(key=lambda t: self._trial_state[t].last_score)
+        return self._trial_state[0]
