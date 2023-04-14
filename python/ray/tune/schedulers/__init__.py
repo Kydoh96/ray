@@ -37,6 +37,7 @@ SCHEDULER_IMPORT = {
     "pbt_replay": PopulationBasedTrainingReplay,
     "pb2": _pb2_importer,
     "resource_changing": ResourceChangingScheduler,
+    "pso" : ParticleSwarmOptimization,
 }
 
 
@@ -93,4 +94,5 @@ __all__ = [
     "PopulationBasedTrainingReplay",
     "HyperBandForBOHB",
     "ResourceChangingScheduler",
+    "ParticleSwarmOptimization",
 ]
