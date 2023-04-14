@@ -95,4 +95,4 @@ class ParticleSwarmOptimization(FIFOScheduler):
     
     def _global_best(self) -> Trial:
         trials.sort(key=lambda t: self._trial_state[t].last_score)
-        return self._trial_state[0]
+        return self._trial_state[-1]
