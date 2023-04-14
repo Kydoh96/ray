@@ -36,7 +36,10 @@ class ParticleSwarmOptimization(FIFOScheduler):
         time_attr: str = "time_total_s",
         metric: Optional[str] = None,
         mode: Optional[str] = None,
-        inertia: int = 0.5,b
+        step_size: int = 5
+        inertia: float = 0.5,
+        global_slope: float = 0.5
+        local_slope: float = 0.5
     ):
         super.__init__()
         self._time_attr = time_attr #How much train before move
