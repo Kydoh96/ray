@@ -53,6 +53,7 @@ TUNE_SCHEDULERS = {
     "PopulationBasedTrainingReplay",
     "PB2",
     "ResourceChangingScheduler",
+    "ParticleSwarmOptimizer"
 }
 
 
