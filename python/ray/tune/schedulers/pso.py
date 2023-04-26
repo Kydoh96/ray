@@ -96,3 +96,63 @@ class ParticleSwarmOptimization(FIFOScheduler):
     def _global_best(self) -> Trial:
         trials.sort(key=lambda t: self._trial_state[t].last_score)
         return self._trial_state[-1]
+    
+        def on_trial_add(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
+        """Called when a new trial is added to the trial runner."""
+
+        raise NotImplementedError
+
+    def on_trial_error(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
+        """Notification for the error of trial.
+        This will only be called when the trial is in the RUNNING state."""
+
+        raise NotImplementedError
+
+    def on_trial_result(
+        self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
+    ) -> str:
+        """Called on each intermediate result returned by a trial.
+        At this point, the trial scheduler can make a decision by returning
+        one of CONTINUE, PAUSE, and STOP. This will only be called when the
+        trial is in the RUNNING state."""
+
+        raise NotImplementedError
+
+    def on_trial_complete(
+        self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
+    ):
+        """Notification for the completion of trial.
+        This will only be called when the trial is in the RUNNING state and
+        either completes naturally or by manual termination."""
+
+        raise NotImplementedError
+
+    def on_trial_remove(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
+        """Called to remove trial.
+        This is called when the trial is in PAUSED or PENDING state. Otherwise,
+        call `on_trial_complete`."""
+
+        raise NotImplementedError
+
+    def choose_trial_to_run(
+        self, trial_runner: "trial_runner.TrialRunner"
+    ) -> Optional[Trial]:
+        """Called to choose a new trial to run.
+        This should return one of the trials in trial_runner that is in
+        the PENDING or PAUSED state. This function must be idempotent.
+        If no trial is ready, return None."""
+
+        raise NotImplementedError
+
+    def debug_string(self) -> str:
+        """Returns a human readable message for printing to the console."""
+
+        raise NotImplementedError
+
+    def save(self, checkpoint_path: str):
+        """Save trial scheduler to a checkpoint"""
+        raise NotImplementedError
+
+    def restore(self, checkpoint_path: str):
+        """Restore trial scheduler from checkpoint."""
+        raise NotImplementedError
