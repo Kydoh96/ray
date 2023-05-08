@@ -79,6 +79,8 @@ class ParticleSwarmOptimization(FIFOScheduler):
             time: The current timestep of the trial.
             result: The trial's result dictionary.
             trial: The trial object.
+            
+            수정해야됨.
         """
 
         # This trial has reached its perturbation interval.
