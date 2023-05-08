@@ -94,7 +94,7 @@ class ParticleSwarmOptimization(FIFOScheduler):
         trials.sort(key=lambda t: self._trial_state[t].last_score)
         return self._trial_state[-1]
     
-        def on_trial_add(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
+    def on_trial_add(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
             if trial_runner.search_alg is not None and isinstance(
             trial_runner.search_alg, SearchGenerator
         ):
