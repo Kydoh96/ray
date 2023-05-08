@@ -15,17 +15,14 @@ class _PSOTrialState:
         self.orig_tag = trial.experiment_tag
         self.last_score = None
         self.last_checkpoint = None
-        self.last_perturbation_time = 0
-        self.last_train_time = 0  # Used for synchronous mode.
-        self.last_result = None  # Used for synchronous mode.
+        self.last_velocity = 0
 
     def __repr__(self) -> str:
         return str(
             (
                 self.last_score,
                 self.last_checkpoint,
-                self.last_train_time,
-                self.last_perturbation_time,
+                self.last_velocity,
             )
         )
 
@@ -98,25 +95,40 @@ class ParticleSwarmOptimization(FIFOScheduler):
         return self._trial_state[-1]
     
         def on_trial_add(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
-        """Called when a new trial is added to the trial runner."""
+            if trial_runner.search_alg is not None and isinstance(
+            trial_runner.search_alg, SearchGenerator
+        ):
+            raise ValueError(
+                "Search algorithms cannot be used with {} "
+                "schedulers. Please remove {}.".format(
+                    self.__class__.__name__, trial_runner.search_alg
+                )
+            )
 
-        raise NotImplementedError
-
-    def on_trial_error(self, trial_runner: "trial_runner.TrialRunner", trial: Trial):
-        """Notification for the error of trial.
-        This will only be called when the trial is in the RUNNING state."""
-
-        raise NotImplementedError
+        if not self._metric or not self._metric_op:
+            raise ValueError(
+                "{} has been instantiated without a valid `metric` ({}) or "
+                "`mode` ({}) parameter. Either pass these parameters when "
+                "instantiating the scheduler, or pass them as parameters "
+                "to `tune.TuneConfig()`".format(
+                    self.__class__.__name__, self._metric, self._mode
+                )
+            )
+            
+            self._trial_state[trial] = _PSOTrialState(trial)
 
     def on_trial_result(
         self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
     ) -> str:
-        """Called on each intermediate result returned by a trial.
-        At this point, the trial scheduler can make a decision by returning
-        one of CONTINUE, PAUSE, and STOP. This will only be called when the
-        trial is in the RUNNING state."""
-
-        raise NotImplementedError
+        
+        "main_code: have to write"
+        
+        
+        
+        
+        
+        
+        
 
     def on_trial_complete(
         self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
@@ -145,14 +157,6 @@ class ParticleSwarmOptimization(FIFOScheduler):
         raise NotImplementedError
 
     def debug_string(self) -> str:
-        """Returns a human readable message for printing to the console."""
-
-        raise NotImplementedError
-
-    def save(self, checkpoint_path: str):
-        """Save trial scheduler to a checkpoint"""
-        raise NotImplementedError
-
-    def restore(self, checkpoint_path: str):
-        """Restore trial scheduler from checkpoint."""
-        raise NotImplementedError
+        return "PopulationBasedTraining: {} checkpoints, {} perturbs".format(
+            self._num_checkpoints, self._num_perturbations
+        )
