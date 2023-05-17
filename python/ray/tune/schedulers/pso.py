@@ -12,17 +12,22 @@ class _PSOTrialState:
     """Internal PSO state tracked per-trial."""
     
     def __init__(self, trial: Trial):
-        self.orig_tag = trial.experiment_tag
+        self.orig_tag = trial.experiment_tag,
         self.last_score = None
         self.last_checkpoint = None
+        self.last_perturbation_time = 0
         self.last_velocity = 0
+        self.best_position = {}
+        self.best_result = None
 
     def __repr__(self) -> str:
         return str(
             (
                 self.last_score,
                 self.last_checkpoint,
-                self.last_velocity,
+                self.last_velocity = 0,
+                self.best_position = {},
+                self.best_result = None,
             )
         )
 
@@ -35,8 +40,9 @@ class ParticleSwarmOptimization(FIFOScheduler):
         mode: Optional[str] = None,
         step_size: int = 5
         inertia: float = 0.5,
-        global_slope: float = 0.5
-        local_slope: float = 0.5
+        global_slope: float = 0.5,
+        local_slope: float = 0.5,
+        synch: bool = True,
     ):
         super.__init__()
         self._time_attr = time_attr #How much train before move
@@ -45,6 +51,7 @@ class ParticleSwarmOptimization(FIFOScheduler):
         self._inertia = inertia #preserving the position of hyperparameter point
         self._global_slope = global_slope
         self._local_slope = local_slope
+        self._synch = synch
     
     def set_search_properties(
         self, metric: Optional[str], mode: Optional[str], **spec
@@ -71,7 +78,7 @@ class ParticleSwarmOptimization(FIFOScheduler):
         return True
     
     def _save_trial_state(
-        self, state: _PSOTrialState, time: int, result: Dict, trial: Trial
+        self, state: _PSOTrialState, result: Dict, trial: Trial
     ):
         """Saves necessary trial information when result is received.
         Args:
@@ -87,10 +94,16 @@ class ParticleSwarmOptimization(FIFOScheduler):
         # Record new state in the state object.
         score = self._metric_op * result[self._metric]
         state.last_score = score
-        state.last_train_time = time
         state.last_result = result
 
         return score
+    
+    def _save_best_trial_state(
+        self, state: _PSOTrialState, trial : Trial
+    ):
+        state.best_position = "?"
+        state.best_result = state.last_result
+        return state
     
     def _global_best(self) -> Trial:
         trials.sort(key=lambda t: self._trial_state[t].last_score)
