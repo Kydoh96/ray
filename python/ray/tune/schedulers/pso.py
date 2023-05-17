@@ -52,6 +52,7 @@ class ParticleSwarmOptimization(FIFOScheduler):
         self._global_slope = global_slope
         self._local_slope = local_slope
         self._synch = synch
+        self._trial_state = {}
     
     def set_search_properties(
         self, metric: Optional[str], mode: Optional[str], **spec
@@ -135,7 +136,8 @@ class ParticleSwarmOptimization(FIFOScheduler):
     def on_trial_result(
         self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
     ) -> str:
-        
+        velocity = 0
+        velocity = self._inertia * 
         "main_code: have to write"
         
         
