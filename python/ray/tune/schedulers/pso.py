@@ -263,7 +263,7 @@ class ParticleSwarmOptimization(FIFOScheduler):
             return (
                 TrialScheduler.NOOP
                 if trial.status == Trial.PAUSED
-                else TrialScheduler.PAUSE
+                else TrialScheduler.PAUSE)
         
         
         
