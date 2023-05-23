@@ -25,9 +25,9 @@ class _PSOTrialState:
             (
                 self.last_score,
                 self.last_checkpoint,
-                self.last_velocity = 0,
-                self.best_position = {},
-                self.best_result = None,
+                self.last_velocity,
+                self.best_position,
+                self.best_result,
             )
         )
 
@@ -100,9 +100,9 @@ class ParticleSwarmOptimization(FIFOScheduler):
         return score
     
     def _save_best_trial_state(
-        self, state: _PSOTrialState, trial : Trial
+        self, state: _PSOTrialState, trial : Trial,
     ):
-        state.best_position = "?"
+        state.best_position = trial.config
         state.best_result = state.last_result
         return state
     
@@ -136,11 +136,21 @@ class ParticleSwarmOptimization(FIFOScheduler):
     def on_trial_result(
         self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
     ) -> str:
-        velocity = 0
-        velocity = self._inertia * 
         "main_code: have to write"
+        "1. 동기화모드 구현"
+        if any(
+            self._trial_state[t].last_train_time < self._next_pertrubation_sync #<- 얘네 만들어야함
+            and t != trial
+            for t in trial_runner.get_live_trials()
+        ):
+            logger.debug("Pausing trial {}".format(trial))
+        else:
+            #All trials are synced at the same timestep.
+            ##작성해라~~##
         
+        "2. 스텝 별 초깃값 생성"
         
+        "3. PSO 계산 및 상태 저"
         
         "PBT"
         if self._time_attr not in result:
