@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional
 from ray.tune.result import DEFAULT_METRIC
 import random
@@ -15,10 +16,11 @@ class _PSOTrialState:
         self.orig_tag = trial.experiment_tag,
         self.last_score = None
         self.last_checkpoint = None
-        self.last_perturbation_time = 0
+        self.last_opt_time = 0
+        self.last_train_time = 0
+        self.best_result = None
         self.last_velocity = 0
         self.best_position = {}
-        self.best_result = None
 
     def __repr__(self) -> str:
         return str(
@@ -136,10 +138,12 @@ class ParticleSwarmOptimization(FIFOScheduler):
     def on_trial_result(
         self, trial_runner: "trial_runner.TrialRunner", trial: Trial, result: Dict
     ) -> str:
+        
         "main_code: have to write"
-        "1. 동기화모드 구현"
+        
+        #1. 동기화모드 구현
         if any(
-            self._trial_state[t].last_train_time < self._next_pertrubation_sync #<- 얘네 만들어야함
+            self._trial_state[t].last_train_time < self._next_perturbation_sync #<- 얘네 만들어야함
             and t != trial
             for t in trial_runner.get_live_trials()
         ):
@@ -148,11 +152,11 @@ class ParticleSwarmOptimization(FIFOScheduler):
             #All trials are synced at the same timestep.
             ##작성해라~~##
         
-        "2. 스텝 별 초깃값 생성"
+        #2. 스텝 별 초깃값 생성
         
-        "3. PSO 계산 및 상태 저"
+        #3. PSO 계산 및 상태 저장
         
-        "PBT"
+        #PBT
         if self._time_attr not in result:
             time_missing_msg = (
                 "Cannot find time_attr {} "
